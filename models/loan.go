@@ -5,5 +5,3 @@ type LoanDetail struct {
 	LoanDate       string
 	ReturnDate     string
 }
-
-var Loans = []LoanDetail{}
