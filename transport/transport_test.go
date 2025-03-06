@@ -39,12 +39,22 @@ func TestGetBookHandler(t *testing.T) {
 			expectedStatus: http.StatusOK,
 			expectedBody:   `{"Title":"Go Programming","AvailableCopies":5}`,
 		},
+		{
+			name:           "title empty",
+			title:          "",
+			mockResponse:   nil,
+			err:            nil,
+			expectedStatus: http.StatusBadRequest,
+			expectedBody:   `{"error": "Title query parameter is required"}`,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockService := new(mocks.Service)
-			mockService.On("CheckAvailability", tt.title).Return(tt.mockResponse, tt.err)
+			if tt.title != "" {
+				mockService.On("CheckAvailability", tt.title).Return(tt.mockResponse, tt.err)
+			}
 
 			req, err := http.NewRequest("GET", "/book?title="+tt.title, nil)
 			require.NoError(t, err)
@@ -59,8 +69,13 @@ func TestGetBookHandler(t *testing.T) {
 			// Verify status code
 			require.Equal(t, tt.expectedStatus, rr.Code)
 
-			// Verify response body
-			require.JSONEq(t, tt.expectedBody, rr.Body.String())
+			// If the body is empty (e.g., for the title empty case), check it directly
+			if rr.Body.Len() > 0 {
+				require.JSONEq(t, tt.expectedBody, rr.Body.String())
+			} else {
+				// In case the body is empty, verify it manually
+				require.Equal(t, tt.expectedBody, rr.Body.String())
+			}
 
 			mockService.AssertExpectations(t)
 		})
