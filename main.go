@@ -2,6 +2,7 @@ package main
 
 import (
 	"elibrary/config"
+	"elibrary/dao"
 	"elibrary/handler"
 	"elibrary/service"
 	"log"
@@ -15,7 +16,8 @@ func main() {
 	config.LoadConfig()
 
 	//starting db connection by calling service layer
-	services := service.NewServiceImpl()
+	daoImpl := dao.NewDao()
+	services := service.NewServiceImpl(daoImpl)
 	services.DB.SetConnMaxIdleTime(5)
 	//closing connection if ending abruptly
 	defer services.DB.Close()
