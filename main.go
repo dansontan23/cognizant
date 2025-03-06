@@ -2,26 +2,29 @@ package main
 
 import (
 	"elibrary/config"
-	"elibrary/db"
-	"elibrary/transport"
+	"elibrary/handler"
+	"elibrary/service"
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 	config.LoadConfig()
-	//starting db connection
-	db.DbInit()
-	defer db.CloseDB()
 
-	http.HandleFunc("/Book", transport.GetBookHandler)
-	//http.HandleFunc("/Borrow", transport.BorrowBookHandler)
-	//http.HandleFunc("/Extend", transport.ExtendLoanHandler)
-	//http.HandleFunc("/Return", transport.ReturnBookHandler)
+	//starting db connection by calling service layer
+	services := service.NewServiceImpl()
+	services.DB.SetConnMaxIdleTime(5)
+	//closing connection if ending abruptly
+	defer services.DB.Close()
 
+	// Initialize Mux router
+	router := mux.NewRouter()
+	// Setup HTTP routes
+	handlers := handler.SetupHandlers(services, router)
 	log.Println("Server started on port 3000")
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	log.Fatal(http.ListenAndServe(":3000", handlers))
 
 }

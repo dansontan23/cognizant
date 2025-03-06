@@ -15,6 +15,7 @@ func DbInit() *sql.DB {
 	if err != nil {
 		log.Fatal("Error opening database:", err)
 	}
+	log.Println("Successfully started db")
 	return DB
 }
 
@@ -25,5 +26,6 @@ func CloseDB() {
 		if err != nil {
 			log.Fatal("Error closing database:", err)
 		}
+		log.Println("Successfully closed db connection")
 	}
 }

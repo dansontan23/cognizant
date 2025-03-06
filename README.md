@@ -8,3 +8,6 @@ server runs on localhost:3000
 
 getbook function working successfully.
 
+abstracted service implementation for better unit testing, easily mocking dependencies
+
+installed gorillamux for easier routing, able to specify crud request type, e.g GET
