@@ -9,8 +9,7 @@ import (
 )
 
 // SetupHandlers sets up all the routes for the application
-func SetupHandlers(services *service.ServiceImpl, router *mux.Router) *http.ServeMux {
-	handler := http.NewServeMux()
+func SetupHandlers(services *service.ServiceImpl, router *mux.Router) {
 
 	// Registering HTTP routes
 	//GET
@@ -18,6 +17,4 @@ func SetupHandlers(services *service.ServiceImpl, router *mux.Router) *http.Serv
 		transport.GetBookHandler(services, w, r)
 	}).Methods("GET")
 	// Add more routes
-
-	return handler
 }

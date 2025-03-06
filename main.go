@@ -23,8 +23,8 @@ func main() {
 	// Initialize Mux router
 	router := mux.NewRouter()
 	// Setup HTTP routes
-	handlers := handler.SetupHandlers(services, router)
+	handler.SetupHandlers(services, router)
 	log.Println("Server started on port 3000")
-	log.Fatal(http.ListenAndServe(":3000", handlers))
+	log.Fatal(http.ListenAndServe(":3000", router))
 
 }
